@@ -1,0 +1,27 @@
+{
+  "name": "skuf-bot",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "repository": "https://github.com/Swuger/skuf-bot.git",
+  "author": "Oleg <swigerd2l@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "format": "prettier -w .",
+    "start": "node dist/index.js",
+    "build": "tsup src/index.ts --minify"
+  },
+  "dependencies": {
+    "@discordjs/voice": "^0.17.0",
+    "discord.js": "^14.15.2",
+    "dotenv": "^16.4.5",
+    "ytdl-core": "^4.11.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "prettier": "^3.2.5",
+    "tsup": "^8.0.2",
+    "tsx": "^4.10.2",
+    "typescript": "^5.4.5"
+  }
+}
