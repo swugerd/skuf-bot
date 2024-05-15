@@ -1,4 +1,10 @@
-import { AudioPlayer, joinVoiceChannel } from '@discordjs/voice';
+import {
+  AudioPlayerStatus,
+  StreamType,
+  createAudioPlayer,
+  createAudioResource,
+  joinVoiceChannel,
+} from '@discordjs/voice';
 import { CommandInteraction, SlashCommandBuilder } from 'discord.js';
 import ytdl from 'ytdl-core';
 import { client } from '../index';
@@ -33,12 +39,23 @@ export async function execute(interaction: CommandInteraction) {
       guildId: voiceChannel.guild.id,
       adapterCreator: voiceChannel.guild.voiceAdapterCreator,
     });
-    const stream = ytdl(url as string, { filter: 'audioonly' });
-    const dispatcher = connection.play(stream);
-    const player = new AudioPlayer();
 
-    dispatcher.on('finish', () => {
-      voiceChannel.leave();
+    const stream = ytdl(url as string, {
+      filter: 'audioonly',
+    });
+
+    const resource = createAudioResource(stream, {
+      inputType: StreamType.Arbitrary,
+    });
+
+    const player = createAudioPlayer();
+
+    player.play(resource);
+
+    connection.subscribe(player);
+
+    player.on(AudioPlayerStatus.Idle, () => {
+      connection.destroy();
     });
 
     await interaction.reply(`Now playing: ${url}`);

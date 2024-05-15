@@ -8,6 +8,7 @@ export const client = new Client({
     IntentsBitField.Flags.Guilds,
     IntentsBitField.Flags.GuildMessages,
     IntentsBitField.Flags.DirectMessages,
+    IntentsBitField.Flags.GuildVoiceStates,
   ],
 });
 
