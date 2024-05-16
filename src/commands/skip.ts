@@ -14,7 +14,7 @@ export async function execute(interaction: CommandInteraction) {
   const voiceChannel = member?.voice.channel;
 
   if (!voiceChannel) {
-    await interaction.reply('I am not currently playing any music.');
+    await interaction.reply('Скуф не будет слушать музыку без тебя');
     return;
   }
 
