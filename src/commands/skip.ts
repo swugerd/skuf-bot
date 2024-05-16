@@ -18,7 +18,7 @@ export async function execute(interaction: CommandInteraction) {
     return;
   }
 
-  const player = PlayerManager.getPlayerInstance();
+  const player = PlayerManager.getPlayerInstance;
 
   if (!player) {
     await interaction.reply('Скуф не проигрывает музыку');

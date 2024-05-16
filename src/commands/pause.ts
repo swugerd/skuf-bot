@@ -7,7 +7,7 @@ export const data = new SlashCommandBuilder()
   .setDescription('Поставить паузу');
 
 export async function execute(interaction: CommandInteraction) {
-  const player = PlayerManager.getPlayerInstance();
+  const player = PlayerManager.getPlayerInstance;
 
   if (player?.state.status === AudioPlayerStatus.Idle) {
     await interaction.reply('Скуф не проигрывает музыку');

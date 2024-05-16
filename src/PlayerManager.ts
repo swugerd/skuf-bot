@@ -3,11 +3,11 @@ import { AudioPlayer } from '@discordjs/voice';
 let playerInstance: AudioPlayer | null = null;
 
 export class PlayerManager {
-  static setPlayerInstance(player: AudioPlayer) {
+  static set setPlayerInstance(player: AudioPlayer) {
     playerInstance = player;
   }
 
-  static getPlayerInstance() {
+  static get getPlayerInstance() {
     return playerInstance;
   }
 }

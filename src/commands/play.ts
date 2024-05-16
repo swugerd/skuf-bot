@@ -91,7 +91,7 @@ export async function playNextSong(
 
     connection.subscribe(player);
 
-    PlayerManager.setPlayerInstance(player);
+    PlayerManager.setPlayerInstance = player;
 
     player.on(AudioPlayerStatus.Idle, () => {
       queue.get(guild.id).shift();
