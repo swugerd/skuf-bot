@@ -18,9 +18,12 @@ import { client } from '../index';
 
 export const data = new SlashCommandBuilder()
   .setName('play')
-  .setDescription('Start to play video')
+  .setDescription('Начать воспроизведение видео')
   .addStringOption((option) =>
-    option.setName('url').setDescription('YouTube video URL').setRequired(true),
+    option
+      .setName('url')
+      .setDescription('Ссылка на youtube видео')
+      .setRequired(true),
   );
 
 export const queue = new Map();
