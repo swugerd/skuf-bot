@@ -5,7 +5,13 @@ import {
   createAudioResource,
   joinVoiceChannel,
 } from '@discordjs/voice';
-import { CommandInteraction, SlashCommandBuilder } from 'discord.js';
+import {
+  CacheType,
+  CommandInteraction,
+  Guild,
+  SlashCommandBuilder,
+  VoiceBasedChannel,
+} from 'discord.js';
 import ytdl from 'ytdl-core';
 import { client } from '../index';
 
@@ -15,6 +21,8 @@ export const data = new SlashCommandBuilder()
   .addStringOption((option) =>
     option.setName('url').setDescription('YouTube video URL').setRequired(true),
   );
+
+export const queue = new Map();
 
 export async function execute(interaction: CommandInteraction) {
   const guild = client.guilds.cache.get(interaction.guildId || '');
@@ -33,6 +41,28 @@ export async function execute(interaction: CommandInteraction) {
     return;
   }
 
+  if (guild) {
+    if (!queue.has(guild.id)) {
+      queue.set(guild.id, []);
+    }
+
+    queue.get(guild.id).push(url);
+
+    if (queue.get(guild.id).length === 1) {
+      playNextSong(guild, voiceChannel, interaction);
+    } else {
+      await interaction.reply(`Added to queue: ${url}`);
+    }
+  }
+}
+
+export async function playNextSong(
+  guild: Guild,
+  voiceChannel: VoiceBasedChannel,
+  interaction: CommandInteraction<CacheType>,
+) {
+  const url = queue.get(guild.id)[0];
+
   try {
     const connection = joinVoiceChannel({
       channelId: voiceChannel.id,
@@ -40,7 +70,7 @@ export async function execute(interaction: CommandInteraction) {
       adapterCreator: voiceChannel.guild.voiceAdapterCreator,
     });
 
-    const stream = ytdl(url as string, {
+    const stream = ytdl(url, {
       filter: 'audioonly',
     });
 
@@ -55,7 +85,12 @@ export async function execute(interaction: CommandInteraction) {
     connection.subscribe(player);
 
     player.on(AudioPlayerStatus.Idle, () => {
-      connection.destroy();
+      queue.get(guild.id).shift();
+      if (queue.get(guild.id).length > 0) {
+        playNextSong(guild, voiceChannel, interaction);
+      } else {
+        connection.destroy();
+      }
     });
 
     await interaction.reply(`Now playing: ${url}`);
