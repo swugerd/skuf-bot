@@ -4,20 +4,20 @@ import { PlayerManager } from '../PlayerManager';
 
 export const data = new SlashCommandBuilder()
   .setName('resume')
-  .setDescription('Resume the current video');
+  .setDescription('Продолжить воспроизведение видео');
 
 export async function execute(interaction: CommandInteraction) {
   const player = PlayerManager.getPlayerInstance();
 
   if (player?.state.status === AudioPlayerStatus.Idle) {
-    await interaction.reply('I am not currently playing any music.');
+    await interaction.reply('Скуф не проигрывает музыку');
     return;
   }
 
   if (player?.state.status === AudioPlayerStatus.Paused) {
     player.unpause();
-    await interaction.reply('Video resumed.');
+    await interaction.reply('Скуф продолжает воспроизведение');
   } else {
-    await interaction.reply('Video is playing now.');
+    await interaction.reply('Видео уже проигрывается');
   }
 }

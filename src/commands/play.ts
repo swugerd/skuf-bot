@@ -31,14 +31,17 @@ export async function execute(interaction: CommandInteraction) {
   const voiceChannel = member?.voice.channel;
 
   if (!voiceChannel) {
-    await interaction.reply('You need to be in a voice channel to play music!');
+    await interaction.reply('Скуф не будет слушать музыку без тебя');
     return;
   }
 
   const url = interaction.options.get('url')?.value;
+  const validYtUrl = new RegExp(
+    '(youtu.*be.*)/(watch?v=|embed/|v|shorts|)(.*?((?=[&#?])|$))',
+  );
 
-  if (!url) {
-    await interaction.reply('Please provide a valid YouTube link.');
+  if (url && !validYtUrl.test(url.toString())) {
+    await interaction.reply('Скуф принимает только ссылки из ютуба');
     return;
   }
 
@@ -52,7 +55,7 @@ export async function execute(interaction: CommandInteraction) {
     if (queue.get(guild.id).length === 1) {
       playNextSong(guild, voiceChannel, interaction);
     } else {
-      await interaction.reply(`Added to queue: ${url}`);
+      await interaction.reply(`Добавлено в очередь: ${url}`);
     }
   }
 }
@@ -96,9 +99,9 @@ export async function playNextSong(
       }
     });
 
-    await interaction.reply(`Now playing: ${url}`);
+    await interaction.reply(`Сейчас играет: ${url}`);
   } catch (error) {
     console.error(error);
-    await interaction.reply('An error occurred while playing the video.');
+    await interaction.reply('Ошибка воспроизведения видео');
   }
 }

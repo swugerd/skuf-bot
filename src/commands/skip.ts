@@ -6,7 +6,7 @@ import { playNextSong, queue } from './play';
 
 export const data = new SlashCommandBuilder()
   .setName('skip')
-  .setDescription('Skip the current video');
+  .setDescription('Пропустить видео');
 
 export async function execute(interaction: CommandInteraction) {
   const guild = client.guilds.cache.get(interaction.guildId || '');
@@ -14,14 +14,14 @@ export async function execute(interaction: CommandInteraction) {
   const voiceChannel = member?.voice.channel;
 
   if (!voiceChannel) {
-    await interaction.channel?.send('I am not currently playing any music.');
+    await interaction.reply('I am not currently playing any music.');
     return;
   }
 
   const player = PlayerManager.getPlayerInstance();
 
   if (!player) {
-    await interaction.channel?.send('I am not currently playing any music.');
+    await interaction.reply('Скуф не проигрывает музыку');
     return;
   }
 
@@ -35,13 +35,13 @@ export async function execute(interaction: CommandInteraction) {
     if (connection) {
       connection.destroy();
     }
-    await interaction.reply('Video queue ended');
+    await interaction.reply('Последнее видео из очереди пропущено');
     return;
   }
 
   if (guild && queue.get(guild.id).length > 0) {
     playNextSong(guild, voiceChannel, interaction);
   } else {
-    await interaction.channel?.send('Skipped the current video.');
+    await interaction.reply('Видео пропущено');
   }
 }
