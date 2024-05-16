@@ -13,6 +13,7 @@ import {
   VoiceBasedChannel,
 } from 'discord.js';
 import ytdl from 'ytdl-core';
+import { PlayerManager } from '../PlayerManager';
 import { client } from '../index';
 
 export const data = new SlashCommandBuilder()
@@ -83,6 +84,8 @@ export async function playNextSong(
     player.play(resource);
 
     connection.subscribe(player);
+
+    PlayerManager.setPlayerInstance(player);
 
     player.on(AudioPlayerStatus.Idle, () => {
       queue.get(guild.id).shift();

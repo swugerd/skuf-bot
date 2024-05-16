@@ -1,5 +1,6 @@
-import { createAudioPlayer, getVoiceConnection } from '@discordjs/voice';
+import { getVoiceConnection } from '@discordjs/voice';
 import { CommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { PlayerManager } from '../PlayerManager';
 import { client } from '../index';
 import { playNextSong, queue } from './play';
 
@@ -17,7 +18,7 @@ export async function execute(interaction: CommandInteraction) {
     return;
   }
 
-  const player = createAudioPlayer();
+  const player = PlayerManager.getPlayerInstance();
 
   if (!player) {
     await interaction.channel?.send('I am not currently playing any music.');
@@ -34,7 +35,7 @@ export async function execute(interaction: CommandInteraction) {
     if (connection) {
       connection.destroy();
     }
-    await interaction.channel?.send('Video queue ended');
+    await interaction.reply('Video queue ended');
     return;
   }
 
