@@ -14,14 +14,18 @@ export async function execute(interaction: CommandInteraction) {
   const voiceChannel = member?.voice.channel;
 
   if (!voiceChannel) {
-    await interaction.reply('Скуф не будет слушать музыку без тебя');
+    if (!interaction.replied) {
+      await interaction.reply('Скуф не будет слушать музыку без тебя');
+    }
     return;
   }
 
   const player = PlayerManager.getPlayerInstance;
 
   if (!player) {
-    await interaction.reply('Скуф не проигрывает музыку');
+    if (!interaction.replied) {
+      await interaction.reply('Скуф не проигрывает музыку');
+    }
     return;
   }
 
@@ -35,13 +39,17 @@ export async function execute(interaction: CommandInteraction) {
     if (connection) {
       connection.destroy();
     }
-    await interaction.reply('Последнее видео из очереди пропущено');
+    if (!interaction.replied) {
+      await interaction.reply('Последнее видео из очереди пропущено');
+    }
     return;
   }
 
   if (guild && queue.get(guild.id).length > 0) {
     playNextSong(guild, voiceChannel, interaction);
   } else {
-    await interaction.reply('Видео пропущено');
+    if (!interaction.replied) {
+      await interaction.reply('Видео пропущено');
+    }
   }
 }

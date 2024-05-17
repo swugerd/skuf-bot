@@ -12,6 +12,7 @@ import {
   SlashCommandBuilder,
   VoiceBasedChannel,
 } from 'discord.js';
+import internal from 'stream';
 import ytdl from 'ytdl-core';
 import { PlayerManager } from '../PlayerManager';
 import { client } from '../index';
@@ -34,7 +35,9 @@ export async function execute(interaction: CommandInteraction) {
   const voiceChannel = member?.voice.channel;
 
   if (!voiceChannel) {
-    await interaction.reply('Скуф не будет слушать музыку без тебя');
+    if (!interaction.replied) {
+      await interaction.reply('Скуф не будет слушать музыку без тебя');
+    }
     return;
   }
 
@@ -44,7 +47,9 @@ export async function execute(interaction: CommandInteraction) {
   );
 
   if (url && !validYtUrl.test(url.toString())) {
-    await interaction.reply('Скуф принимает только ссылки из ютуба');
+    if (!interaction.replied) {
+      await interaction.reply('Скуф принимает только ссылки из ютуба');
+    }
     return;
   }
 
@@ -58,7 +63,9 @@ export async function execute(interaction: CommandInteraction) {
     if (queue.get(guild.id).length === 1) {
       playNextSong(guild, voiceChannel, interaction);
     } else {
-      await interaction.reply(`Добавлено в очередь: ${url}`);
+      if (!interaction.replied) {
+        await interaction.reply(`Добавлено в очередь: ${url}`);
+      }
     }
   }
 }
@@ -77,9 +84,27 @@ export async function playNextSong(
       adapterCreator: voiceChannel.guild.voiceAdapterCreator,
     });
 
-    const stream = ytdl(url, {
-      filter: 'audioonly',
-    });
+    let stream: internal.Readable | null = null;
+
+    const videoData = await ytdl.getBasicInfo(url);
+
+    const liveBroadcastDetails = videoData.videoDetails.liveBroadcastDetails;
+
+    if (liveBroadcastDetails && liveBroadcastDetails.isLiveNow) {
+      stream = ytdl(url, {
+        highWaterMark: 1 << 25,
+        liveBuffer: 4900,
+        quality: [91, 92, 93, 94, 95],
+      });
+    } else {
+      stream = ytdl(url, {
+        filter: 'audioonly',
+        highWaterMark: 1 << 62,
+        liveBuffer: 1 << 62,
+        dlChunkSize: 0,
+        quality: 'lowestaudio',
+      });
+    }
 
     const resource = createAudioResource(stream, {
       inputType: StreamType.Arbitrary,
@@ -94,7 +119,6 @@ export async function playNextSong(
     PlayerManager.setPlayerInstance = player;
 
     player.on(AudioPlayerStatus.Idle, () => {
-      queue.get(guild.id).shift();
       if (queue.get(guild.id).length > 0) {
         playNextSong(guild, voiceChannel, interaction);
       } else {
@@ -102,7 +126,9 @@ export async function playNextSong(
       }
     });
 
-    await interaction.reply(`Сейчас играет: ${url}`);
+    if (!interaction.replied) {
+      await interaction.reply(`Сейчас играет: ${url}`);
+    }
   } catch (error) {
     console.error(error);
     await interaction.reply('Ошибка воспроизведения видео');
