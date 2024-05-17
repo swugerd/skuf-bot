@@ -1,3 +1,4 @@
+import * as clear from './clear';
 import * as pause from './pause';
 import * as play from './play';
 import * as resume from './resume';
@@ -8,4 +9,5 @@ export const commands = {
   skip,
   pause,
   resume,
+  clear,
 };
