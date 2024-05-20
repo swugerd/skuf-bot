@@ -2,7 +2,8 @@ import { getVoiceConnection } from '@discordjs/voice';
 import { CommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { PlayerManager } from '../PlayerManager';
 import { client } from '../index';
-import { playNextSong, queue } from './play';
+import { playNextSong } from '../utils/playNextSong';
+import { queue } from './play';
 
 export const data = new SlashCommandBuilder()
   .setName('skip')
@@ -31,25 +32,17 @@ export async function execute(interaction: CommandInteraction) {
 
   player.stop();
 
-  queue.get(guild?.id).shift();
-
-  if (queue.get(guild?.id).length === 0) {
-    player.stop();
-    const connection = getVoiceConnection(guild?.id || '');
-    if (connection) {
-      connection.destroy();
-    }
-    if (!interaction.replied) {
-      await interaction.reply('Последнее видео из очереди пропущено');
-    }
-    return;
-  }
-
-  if (guild && queue.get(guild.id).length > 0) {
+  if (guild && queue.get(guild.id).length - 1 > 0) {
     playNextSong(guild, voiceChannel, interaction);
   } else {
     if (!interaction.replied) {
-      await interaction.reply('Видео пропущено');
+      const connection = getVoiceConnection(guild?.id || '');
+      if (connection) {
+        connection.destroy();
+      }
+      if (!interaction.replied) {
+        await interaction.reply('Последнее видео из очереди пропущено');
+      }
     }
   }
 }
