@@ -4,7 +4,7 @@ import { PlayerManager } from './PlayerManager';
 import { commands } from './commands';
 import { queue } from './commands/play';
 import { config } from './config';
-import { deployCommands } from './deploy-commands';
+import { deployCommands } from './utils/deploy-commands';
 
 export const client = new Client({
   intents: [
