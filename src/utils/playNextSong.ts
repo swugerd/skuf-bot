@@ -14,7 +14,9 @@ import {
 import internal from 'stream';
 import ytdl from 'ytdl-core';
 import { PlayerManager } from '../PlayerManager';
+import { TimeoutManager } from '../TimeoutManager';
 import { queue } from '../commands/play';
+import { TIMEOUT_DELAY } from '../constants';
 
 export async function playNextSong(
   guild: Guild,
@@ -70,7 +72,16 @@ export async function playNextSong(
       if (queue.get(guild.id).length > 0) {
         playNextSong(guild, voiceChannel, interaction);
       } else {
-        connection.destroy();
+        TimeoutManager.setTimeoutInstance = setTimeout(() => {
+          connection.destroy();
+        }, TIMEOUT_DELAY);
+      }
+    });
+
+    player.on(AudioPlayerStatus.Playing, () => {
+      const timeoutInstance = TimeoutManager.getTimeoutInstance;
+      if (timeoutInstance) {
+        clearTimeout(timeoutInstance);
       }
     });
 

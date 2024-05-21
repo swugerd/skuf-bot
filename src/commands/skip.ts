@@ -1,4 +1,3 @@
-import { getVoiceConnection } from '@discordjs/voice';
 import { CommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { PlayerManager } from '../PlayerManager';
 import { client } from '../index';
@@ -36,13 +35,7 @@ export async function execute(interaction: CommandInteraction) {
     playNextSong(guild, voiceChannel, interaction);
   } else {
     if (!interaction.replied) {
-      const connection = getVoiceConnection(guild?.id || '');
-      if (connection) {
-        connection.destroy();
-      }
-      if (!interaction.replied) {
-        await interaction.reply('Последнее видео из очереди пропущено');
-      }
+      await interaction.reply('Последнее видео из очереди пропущено');
     }
   }
 }
