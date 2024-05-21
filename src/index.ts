@@ -1,6 +1,7 @@
 import { getVoiceConnection } from '@discordjs/voice';
 import { Client, IntentsBitField } from 'discord.js';
 import { PlayerManager } from './PlayerManager';
+import { TimeoutManager } from './TimeoutManager';
 import { commands } from './commands';
 import { queue } from './commands/play';
 import { config } from './config';
@@ -28,6 +29,12 @@ client.on('voiceStateUpdate', (_, newState) => {
     const connection = getVoiceConnection(newState.guild.id);
 
     const player = PlayerManager.getPlayerInstance;
+
+    const timeout = TimeoutManager.getTimeoutInstance;
+
+    if (timeout) {
+      clearTimeout(timeout);
+    }
 
     player?.stop();
 
