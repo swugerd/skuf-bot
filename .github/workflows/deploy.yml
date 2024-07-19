@@ -16,6 +16,7 @@ jobs:
           cache: yarn
       - run: yarn
   deploy:
+    needs: init
     runs-on: ubuntu-latest
     concurrency:
       group: deploy
