@@ -12,11 +12,12 @@ import {
   VoiceBasedChannel,
 } from 'discord.js';
 import internal from 'stream';
-import ytdl from 'ytdl-core';
 import { PlayerManager } from '../PlayerManager';
 import { TimeoutManager } from '../TimeoutManager';
 import { queue } from '../commands/play';
 import { TIMEOUT_DELAY } from '../constants';
+
+const ytdl = require('@distube/ytdl-core');
 
 export async function playNextSong(
   guild: Guild,
@@ -54,7 +55,7 @@ export async function playNextSong(
       });
     }
 
-    const resource = createAudioResource(stream, {
+    const resource = createAudioResource(stream!, {
       inputType: StreamType.Arbitrary,
     });
 
