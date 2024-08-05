@@ -1,30 +1,31 @@
 import {
   AudioPlayerStatus,
-  StreamType,
   createAudioPlayer,
   createAudioResource,
   joinVoiceChannel,
+  StreamType,
 } from '@discordjs/voice';
+import ytdl from '@distube/ytdl-core';
 import {
   CacheType,
   CommandInteraction,
   Guild,
   VoiceBasedChannel,
 } from 'discord.js';
-import internal from 'stream';
+import { Readable } from 'stream';
 import { PlayerManager } from '../PlayerManager';
 import { TimeoutManager } from '../TimeoutManager';
 import { queue } from '../commands/play';
-import { TIMEOUT_DELAY } from '../constants';
-
-const ytdl = require('@distube/ytdl-core');
+import { TIMEOUT_DELAY_IN_MINUTES } from '../constants';
 
 export async function playNextSong(
   guild: Guild,
   voiceChannel: VoiceBasedChannel,
   interaction: CommandInteraction<CacheType>,
 ) {
-  const url = queue.get(guild.id)[0];
+  const queueList = queue.get(guild.id);
+
+  const url = queueList[0];
 
   try {
     const connection = joinVoiceChannel({
@@ -33,8 +34,7 @@ export async function playNextSong(
       adapterCreator: voiceChannel.guild.voiceAdapterCreator,
     });
 
-    let stream: internal.Readable | null = null;
-
+    let stream: Readable | null = null;
     const videoData = await ytdl.getBasicInfo(url);
 
     const liveBroadcastDetails = videoData.videoDetails.liveBroadcastDetails;
@@ -43,19 +43,23 @@ export async function playNextSong(
       stream = ytdl(url, {
         highWaterMark: 1 << 25,
         liveBuffer: 4900,
-        quality: [91, 92, 93, 94, 95],
+        quality: 'highestaudio',
       });
     } else {
       stream = ytdl(url, {
         filter: 'audioonly',
-        highWaterMark: 1 << 62,
-        liveBuffer: 1 << 62,
-        dlChunkSize: 0,
-        quality: 'lowestaudio',
+        highWaterMark: 1 << 25,
+        quality: 'highestaudio',
       });
     }
 
-    const resource = createAudioResource(stream!, {
+    stream.on('error', (error) => {
+      console.error('Stream error:', error);
+      queue.set(guild.id, []);
+      player.stop();
+    });
+
+    const resource = createAudioResource(stream, {
       inputType: StreamType.Arbitrary,
     });
 
@@ -68,14 +72,14 @@ export async function playNextSong(
     PlayerManager.setPlayerInstance = player;
 
     player.on(AudioPlayerStatus.Idle, () => {
-      queue.get(guild?.id).shift();
+      queueList.shift();
 
-      if (queue.get(guild.id).length > 0) {
+      if (queueList.length > 0) {
         playNextSong(guild, voiceChannel, interaction);
       } else {
         TimeoutManager.setTimeoutInstance = setTimeout(() => {
           connection.destroy();
-        }, TIMEOUT_DELAY);
+        }, TIMEOUT_DELAY_IN_MINUTES * 60000);
       }
     });
 

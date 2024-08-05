@@ -13,12 +13,11 @@
   },
   "dependencies": {
     "@discordjs/voice": "^0.17.0",
-    "@distube/ytdl-core": "^4.13.5",
+    "@distube/ytdl-core": "^4.14.3",
     "discord.js": "^14.15.2",
     "dotenv": "^16.4.5",
     "ffmpeg-static": "^5.2.0",
-    "libsodium-wrappers": "^0.7.13",
-    "ytdl-core": "^4.11.5"
+    "libsodium-wrappers": "^0.7.13"
   },
   "devDependencies": {
     "@types/node": "^20.12.12",
