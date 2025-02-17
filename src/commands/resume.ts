@@ -1,5 +1,6 @@
-import { AudioPlayerStatus } from '@discordjs/voice';
 import { CommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { AudioPlayerStatus } from '@discordjs/voice';
+
 import { PlayerManager } from '../PlayerManager';
 
 export const data = new SlashCommandBuilder()
