@@ -1,6 +1,8 @@
 import { CommandInteraction, SlashCommandBuilder } from 'discord.js';
+
 import { PlayerManager } from '../PlayerManager';
 import { client } from '../index';
+
 import { queue } from './play';
 
 export const data = new SlashCommandBuilder()

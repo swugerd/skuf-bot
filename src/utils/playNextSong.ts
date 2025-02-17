@@ -1,4 +1,11 @@
 import {
+  CacheType,
+  CommandInteraction,
+  Guild,
+  VoiceBasedChannel,
+} from 'discord.js';
+import { Readable } from 'stream';
+import {
   AudioPlayerStatus,
   createAudioPlayer,
   createAudioResource,
@@ -6,16 +13,10 @@ import {
   StreamType,
 } from '@discordjs/voice';
 import ytdl from '@distube/ytdl-core';
-import {
-  CacheType,
-  CommandInteraction,
-  Guild,
-  VoiceBasedChannel,
-} from 'discord.js';
-import { Readable } from 'stream';
+
+import { queue } from '../commands/play';
 import { PlayerManager } from '../PlayerManager';
 import { TimeoutManager } from '../TimeoutManager';
-import { queue } from '../commands/play';
 import { TIMEOUT_DELAY_IN_MINUTES } from '../constants';
 
 export async function playNextSong(
