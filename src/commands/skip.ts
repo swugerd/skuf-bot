@@ -2,7 +2,7 @@ import { CommandInteraction, SlashCommandBuilder } from 'discord.js';
 
 import { client } from '../index';
 import { PlayerManager } from '../PlayerManager';
-import { playNextSong } from '../utils';
+import { playNextSong } from '../utils/playNextSong';
 
 import { queue } from './play';
 

@@ -2,6 +2,7 @@ import { CommandInteraction, SlashCommandBuilder } from 'discord.js';
 
 import { client } from '../index';
 import { playNextSong } from '../utils/playNextSong';
+import { YOUTUBE_LINK_REGEXP } from '../constants';
 
 export const data = new SlashCommandBuilder()
   .setName('play')
@@ -28,9 +29,7 @@ export async function execute(interaction: CommandInteraction) {
   }
 
   const url = interaction.options.get('url')?.value;
-  const validYtUrl = new RegExp(
-    '(youtu.*be.*)/(watch?v=|embed/|v|shorts|)(.*?((?=[&#?])|$))',
-  );
+  const validYtUrl = new RegExp(YOUTUBE_LINK_REGEXP);
 
   if (url && !validYtUrl.test(url.toString())) {
     if (!interaction.replied) {

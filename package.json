@@ -2,7 +2,7 @@
   "name": "skuf-bot",
   "version": "2.2.3",
   "main": "src/index.ts",
-  "repository": "https://github.com/Swuger/skuf-bot.git",
+  "repository": "https://github.com/swugerd/skuf-bot.git",
   "author": "Oleg <swigerd2l@gmail.com>",
   "license": "MIT",
   "scripts": {
@@ -12,12 +12,12 @@
     "build": "tsup src/index.ts --minify"
   },
   "dependencies": {
-    "@discordjs/voice": "^0.17.0",
-    "@distube/ytdl-core": "^4.16.4",
-    "discord.js": "^14.15.2",
-    "dotenv": "^16.4.5",
+    "@discordjs/voice": "^0.18.0",
+    "@distube/ytdl-core": "^4.16.5",
+    "discord.js": "^14.18.0",
+    "dotenv": "^16.4.7",
     "ffmpeg-static": "^5.2.0",
-    "libsodium-wrappers": "^0.7.13"
+    "libsodium-wrappers": "^0.7.15"
   },
   "devDependencies": {
     "@types/node": "^20.12.12",
