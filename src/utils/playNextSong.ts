@@ -36,7 +36,7 @@ export async function playNextSong(
     });
 
     let stream: Readable | null = null;
-    const videoData = await ytdl.getBasicInfo(url);
+    const videoData = await ytdl.getInfo(url, { playerClients: ['WEB'] });
 
     const liveBroadcastDetails = videoData.videoDetails.liveBroadcastDetails;
 
