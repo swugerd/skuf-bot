@@ -18,6 +18,7 @@ import { queue } from '../commands/play';
 import { PlayerManager } from '../PlayerManager';
 import { TimeoutManager } from '../TimeoutManager';
 import { TIMEOUT_DELAY_IN_MINUTES } from '../constants';
+import { config } from '../config';
 
 export async function playNextSong(
   guild: Guild,
@@ -36,7 +37,9 @@ export async function playNextSong(
     });
 
     let stream: Readable | null = null;
-    const videoData = await ytdl.getInfo(url, { playerClients: ['WEB'] });
+    
+    const agent = ytdl.createAgent(JSON.parse(config.YOUTUBE_COOKIES))
+    const videoData = await ytdl.getInfo(url, { agent });
 
     const liveBroadcastDetails = videoData.videoDetails.liveBroadcastDetails;
 
