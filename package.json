@@ -7,13 +7,12 @@
   "license": "MIT",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "format": "prettier -w .",
     "start": "node dist/index.js",
     "build": "tsup src/index.ts --minify"
   },
   "dependencies": {
     "@discordjs/voice": "^0.18.0",
-    "@distube/ytdl-core": "^4.16.5",
+    "@distube/ytdl-core": "^4.16.8",
     "discord.js": "^14.18.0",
     "dotenv": "^16.4.7",
     "ffmpeg-static": "^5.2.0",
@@ -21,7 +20,6 @@
   },
   "devDependencies": {
     "@types/node": "^20.12.12",
-    "prettier": "^3.2.5",
     "tsup": "^8.0.2",
     "tsx": "^4.10.2",
     "typescript": "^5.4.5"
