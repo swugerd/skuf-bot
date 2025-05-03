@@ -34,4 +34,4 @@ jobs:
           git pull origin master
           yarn
           yarn build
-          pm2-restart skuf-bot
+          pm2 restart skuf-bot
